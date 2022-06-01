@@ -4,6 +4,8 @@ using api.Models;
 using api.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using api.ViewModels;
+using System;
 
 namespace api.Controllers
 {
@@ -39,6 +41,31 @@ namespace api.Controllers
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
             return todo == null? NotFound() : Ok(todo);
+        }
+
+        [HttpPost("todos")]
+        public async Task<IActionResult> PostAsync(
+            [FromServices] AppDbContext context,
+            // Todo todo, podemos usar assim ou com view model, mostrado abaixo:
+            [FromBody] CreateTodoViewModel model
+        ){
+            if(!ModelState.IsValid) // Aplica as validções do CreateTodoViewModel, ou seja, se Title não estiver preenchido, não sera válido.
+                return BadRequest();
+
+            var todo = new Todo{
+                Date = DateTime.Now,
+                Done = false,
+                Title = model.Title
+            };
+
+            try{
+                await context.Todos.AddAsync(todo); // Salva so na memória. EX: Commit.
+                await context.SaveChangesAsync(); // Salva no banco. EX: Push.
+                return Created($"v1/todos/{todo.Id}", todo);
+            }catch(Exception){
+                return BadRequest();
+            }
+            
         }
     }
 }
