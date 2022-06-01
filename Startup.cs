@@ -18,6 +18,8 @@ namespace Api
         {
             // O que precisamos para trabalhar com os controladores no projeto.
             services.AddControllers();
+            // Como ja configuramos a connection string dentro de AppDbContext, não precisamos configurar mais nada.
+            // Com isso, AppDbContext estará disponível em todos os métodos que a gente precisar, através de injeção de dependência.
             services.AddDbContext<AppDbContext>();
         }
 
