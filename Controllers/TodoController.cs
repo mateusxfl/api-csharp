@@ -67,5 +67,34 @@ namespace api.Controllers
             }
             
         }
+
+        [HttpPut("todos/{id}")]
+        public async Task<IActionResult> PutAsync(
+            [FromServices] AppDbContext context,
+            [FromBody] UpdateTodoViewModel model,
+            [FromRoute] int id
+        ){
+            if(!ModelState.IsValid)
+                return BadRequest();
+
+            var todo = await context
+            .Todos
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (todo == null)
+                return NotFound();
+
+            try{
+                todo.Title = model.Title;
+
+                context.Todos.Update(todo);
+                await context.SaveChangesAsync();
+
+                return Ok(todo);
+            }catch(Exception){
+                return BadRequest();
+            }
+            
+        }
     }
 }
