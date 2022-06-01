@@ -16,7 +16,7 @@ namespace api.Controllers
         // Action
         [HttpGet]
         [Route("todos")]
-        public async Task<IActionResult> Get(
+        public async Task<IActionResult> GetAsync(
             [FromServices] AppDbContext context // Injeção de dependência: pega tudo do services dentro do startup.
         ){
             // var todos = await context.Todos.ToListAsync();
@@ -25,6 +25,20 @@ namespace api.Controllers
             .AsNoTracking() // Item de leitura do EF que melhora a performance, tendo em vista que não precisamos trackear nada.
             .ToListAsync();
             return Ok(todos);
+        }
+
+        [HttpGet]
+        [Route("todos/{id}")]
+        public async Task<IActionResult> GetByIdAsync(
+            [FromServices] AppDbContext context, // Injeção de dependência: pega tudo do services dentro do startup.
+            [FromRoute]int id // Informa que o parâmetro vem da rota (Opcional).
+        ){
+            // var todos = await context.Todos.ToListAsync();
+            var todo = await context
+            .Todos
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
+            return todo == null? NotFound() : Ok(todo);
         }
     }
 }
