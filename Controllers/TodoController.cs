@@ -96,5 +96,27 @@ namespace api.Controllers
             }
             
         }
+
+        [HttpDelete("todos/{id}")]
+        public async Task<IActionResult> DeleteAsync(
+            [FromServices] AppDbContext context,
+            [FromRoute] int id
+        ){
+            var todo = await context
+            .Todos
+            .FirstAsync(x => x.Id == id);
+
+            try
+            {
+                context.Todos.Remove(todo);
+                await context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            
+        }
     }
 }
