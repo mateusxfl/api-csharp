@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using api.Models;
+using api.Data;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -13,8 +16,15 @@ namespace api.Controllers
         // Action
         [HttpGet]
         [Route("todos")]
-        public List<Todo> Get(){
-            return new List<Todo>();
+        public async Task<IActionResult> Get(
+            [FromServices] AppDbContext context // Injeção de dependência: pega tudo do services dentro do startup.
+        ){
+            // var todos = await context.Todos.ToListAsync();
+            List<Todo> todos = await context
+            .Todos
+            .AsNoTracking() // Item de leitura do EF que melhora a performance, tendo em vista que não precisamos trackear nada.
+            .ToListAsync();
+            return Ok(todos);
         }
     }
 }
