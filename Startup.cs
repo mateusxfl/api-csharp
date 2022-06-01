@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using api.Data;
 
 namespace Api
 {
@@ -17,6 +18,7 @@ namespace Api
         {
             // O que precisamos para trabalhar com os controladores no projeto.
             services.AddControllers();
+            services.AddDbContext<AppDbContext>();
         }
 
         // Use este método para configurar o pipeline de solicitação HTTP.
@@ -31,11 +33,6 @@ namespace Api
 
             app.UseEndpoints(endpoints =>
             {
-                // endpoints.MapGet("/", async context =>
-                // {
-                //     await context.Response.WriteAsync("Hello World!");
-                // });
-
                 // Mapeia um endpoint.
                 endpoints.MapControllerRoute(
                     name: "default",
