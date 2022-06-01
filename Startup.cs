@@ -12,13 +12,14 @@ namespace Api
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        // Use este método para adicionar serviços ao contêiner.
         public void ConfigureServices(IServiceCollection services)
         {
+            // O que precisamos para trabalhar com os controladores no projeto.
+            services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // Use este método para configurar o pipeline de solicitação HTTP.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -30,10 +31,16 @@ namespace Api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                // endpoints.MapGet("/", async context =>
+                // {
+                //     await context.Response.WriteAsync("Hello World!");
+                // });
+
+                // Mapeia um endpoint.
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                );
             });
         }
     }
